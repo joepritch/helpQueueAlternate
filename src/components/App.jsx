@@ -1,8 +1,9 @@
 import React from 'react';
 import Header from './Header';
 import TicketList from './TicketList';
-import NewTicketForm from './NewTicketForm';
+import NewTicketControl from './NewTicketControl';
 import MyStyledComponent from './MyStyledComponent';
+import Error404 from './Error404';
 import { Switch, Route } from 'react-router-dom';
 
 function App(){
@@ -31,8 +32,9 @@ function App(){
       <Header/>
       <Switch>
         <Route exact path='/' component={TicketList} />
-        <Route path='/newTicket' component={NewTicketForm} />
-       </Switch>
+        <Route path='/newTicket' component={NewTicketControl} />
+        <Route component={Error404} />
+      </Switch>
       <MyStyledComponent/>
     </div>
   );

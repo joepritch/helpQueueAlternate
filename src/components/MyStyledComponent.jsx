@@ -1,6 +1,7 @@
 import React from 'react';
+// import reallyAdorablePuppy from '../assets/images/cutestpuppy.jpg';
 
-function MyStyledComponent(props) {
+function MyStyledComponent() {
 
   return (
     <div>
@@ -10,8 +11,11 @@ function MyStyledComponent(props) {
           color: white;
         }
     `}</style>
-  </div>
+    </div>
   );
 }
 
+// <div>
+//   <img src={reallyAdorablePuppy}/>
+// </div>
 export default MyStyledComponent;
