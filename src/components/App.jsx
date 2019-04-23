@@ -5,6 +5,7 @@ import NewTicketControl from './NewTicketControl';
 import MyStyledComponent from './MyStyledComponent';
 import Error404 from './Error404';
 import { Switch, Route } from 'react-router-dom';
+import Moment from 'moment';
 
 class App extends React.Component{
 
@@ -12,6 +13,25 @@ class App extends React.Component{
     var colorNumber = Math.floor(100000 + Math.random()*900000);
     var color = '#'+colorNumber.toString();
     return color;
+  }
+
+  componentDidMount(){
+    this.waitTimeUpdateTimer = setInterval(() =>
+      this.updateTicketElapsedWaitTime(),
+      60000
+    );
+  }
+
+  updateTicketElapsedWaitTime() {
+    let newMasterTicketList = this.state.masterTicketList.slice();
+    newMasterTicketList.forEach((ticket) =>
+      ticket.formattedWaitTime = (ticket.timeOpen).fromNow(true)
+    );
+    this.setState({masterTicketList: newMasterTicketList})
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.waitTimeUpdateTimer);
   }
 
   constructor(props){
@@ -24,6 +44,7 @@ class App extends React.Component{
 
   handleAddNewTicket(newTicket){
     var newMasterTicketList = this.state.masterTicketList.slice();
+    newTicket.formattedWaitTime = (newTicket.timeOpen).fromNow(true)
     newMasterTicketList.push(newTicket);
     this.setState({masterTicketList: newMasterTicketList})
   }
