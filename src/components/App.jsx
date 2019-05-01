@@ -5,18 +5,17 @@ import NewTicketControl from './NewTicketControl';
 import MyStyledComponent from './MyStyledComponent';
 import Admin from './Admin';
 import Error404 from './Error404';
-import { Switch, Route } from 'react-router-dom';
-import { v4 } from 'uuid';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class App extends React.Component{
 
   constructor(props){
     super(props);
     this.state = {
-      masterTicketList: {},
       selectedTicket: null
     };
-    this.handleAddNewTicket = this.handleAddNewTicket.bind(this);
     this.handleSelectTicket = this.handleSelectTicket.bind(this);
   }
 
@@ -33,13 +32,13 @@ class App extends React.Component{
     );
   }
 
-  updateTicketElapsedWaitTime() {
-    var newMasterTicketList = Object.assign({}, this.state.masterTicketList);
-    Object.keys(newMasterTicketList).forEach(ticketId => {
-      newMasterTicketList[ticketId].formattedWaitTime = (newMasterTicketList[ticketId].fromNow(true));
-    });
-    this.setState({masterTicketList: newMasterTicketList});
-  }
+  // updateTicketElapsedWaitTime() {
+  //   var newMasterTicketList = Object.assign({}, this.state.masterTicketList);
+  //   Object.keys(newMasterTicketList).forEach(ticketId => {
+  //     newMasterTicketList[ticketId].formattedWaitTime = (newMasterTicketList[ticketId].fromNow(true));
+  //   });
+  //   this.setState({masterTicketList: newMasterTicketList});
+  // }
 
   componentWillUnmount(){
     clearInterval(this.waitTimeUpdateTimer);
@@ -49,13 +48,6 @@ class App extends React.Component{
     this.setState({selectedTicket: ticketId});
   }
 
-
-  handleAddNewTicket(newTicket){
-    var newTicketId = v4();
-    var newMasterTicketList = Object.assign({}, this.state.masterTicketList, {[newTicketId]: newTicket});
-    newMasterTicketList[newTicketId].formattedWaitTime = newMasterTicketList[newTicketId].timeOpen.fromNow(true);
-    this.setState({masterTicketList: newMasterTicketList});
-  }
 
   render(){
     return (
@@ -75,9 +67,9 @@ class App extends React.Component{
           `}</style>
         <Header/>
         <Switch>
-          <Route exact path='/' render={()=><TicketList ticketList={this.state.masterTicketList}/>}/>
-          <Route path='/newTicket' render={()=><NewTicketControl onAddNewTicket={this.handleAddNewTicket}/>}/>
-          <Route path='/admin' render={(props)=><Admin ticketList={this.state.masterTicketList} currentRouterPath={props.location.pathname} onSelectTicket={this.handleSelectTicket} selectedTicket={this.state.selectedTicket}/>}/>
+          <Route exact path='/' render={()=><TicketList ticketList={this.props.masterTicketList}/>}/>
+          <Route path='/newTicket' render={()=><NewTicketControl/>}/>
+          <Route path='/admin' render={(props)=><Admin ticketList={this.props.masterTicketList} currentRouterPath={props.location.pathname} onSelectTicket={this.handleSelectTicket} selectedTicket={this.state.selectedTicket}/>}/>
           <Route component={Error404} />
         </Switch>
         <MyStyledComponent/>
@@ -86,5 +78,15 @@ class App extends React.Component{
   }
 }
 
+App.propTypes - {
+  masterTicketList: PropTypes.object
+}
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    masterTicketList: state
+  }
+}
+
+
+export default withRouter(connect()(App));

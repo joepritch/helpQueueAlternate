@@ -1,6 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Moment from 'moment';
+import { connect } from 'react-redux';
+import { v4 } from 'uuid';
 
 function NewTicketForm(props){
   let _names = null;
@@ -9,12 +10,16 @@ function NewTicketForm(props){
 
   function handleNewTicketSubmit(event){
     event.preventDefault();
-    props.onAddNewTicket({
+    const { dispatch } = props;
+    const action = {
+      type: 'ADD_TICKET',
       names:_names.value,
       location:_location.value,
       issue:_issue.value,
-      timeOpen: new Moment()
-    });
+      timeOpen: new Moment(),
+      id: v4()
+    };
+    dispatch(action);
     _names.value = '';
     _location.value = '';
     _issue.value = '';
@@ -45,8 +50,4 @@ function NewTicketForm(props){
   );
 }
 
-NewTicketForm.propTypes = {
-  onAddNewTicket: PropTypes.func
-};
-
-export default NewTicketForm;
+export default connect()(NewTicketForm);
